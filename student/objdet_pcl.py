@@ -242,30 +242,30 @@ def bev_from_pcl(lidar_pcl, configs):
     ####### ID_S2_EX3 END #######       
 
     # TODO remove after implementing all of the above steps
-    ##lidar_pcl_cpy = []
+    #lidar_pcl_cpy = []
     #lidar_pcl_top = []
     #height_map = []
     #intensity_map = []
 
     # Compute density layer of the BEV map
-    #density_map = np.zeros((configs.bev_height + 1, configs.bev_width + 1))
-    #_, _, counts = np.unique(lidar_pcl_cpy[:, 0:2], axis=0, return_index=True, return_counts=True)
-    #normalizedCounts = np.minimum(1.0, np.log(counts + 1) / np.log(64)) 
-    #density_map[np.int_(lidar_pcl_top[:, 0]), np.int_(lidar_pcl_top[:, 1])] = normalizedCounts
+    density_map = np.zeros((configs.bev_height + 1, configs.bev_width + 1))
+    _, _, counts = np.unique(lidar_pcl_cpy[:, 0:2], axis=0, return_index=True, return_counts=True)
+    normalizedCounts = np.minimum(1.0, np.log(counts + 1) / np.log(64)) 
+    density_map[np.int_(lidar_pcl_top[:, 0]), np.int_(lidar_pcl_top[:, 1])] = normalizedCounts
         
     # assemble 3-channel bev-map from individual maps
-    #bev_map = np.zeros((3, configs.bev_height, configs.bev_width))
-    #bev_map[2, :, :] = density_map[:configs.bev_height, :configs.bev_width]  # r_map
-    #bev_map[1, :, :] = height_map[:configs.bev_height, :configs.bev_width]  # g_map
-    #bev_map[0, :, :] = intensity_map[:configs.bev_height, :configs.bev_width]  # b_map
+    bev_map = np.zeros((3, configs.bev_height, configs.bev_width))
+    bev_map[2, :, :] = density_map[:configs.bev_height, :configs.bev_width]  # r_map
+    bev_map[1, :, :] = height_map[:configs.bev_height, :configs.bev_width]  # g_map
+    bev_map[0, :, :] = intensity_map[:configs.bev_height, :configs.bev_width]  # b_map
 
     # expand dimension of bev_map before converting into a tensor
-    #s1, s2, s3 = bev_map.shape
-    #bev_maps = np.zeros((1, s1, s2, s3))
-    #bev_maps[0] = bev_map
+    s1, s2, s3 = bev_map.shape
+    bev_maps = np.zeros((1, s1, s2, s3))
+    bev_maps[0] = bev_map
 
-    #bev_maps = torch.from_numpy(bev_maps)  # create tensor from birds-eye view
-    #input_bev_maps = bev_maps.to(configs.device, non_blocking=True).float()
+    bev_maps = torch.from_numpy(bev_maps)  # create tensor from birds-eye view
+    input_bev_maps = bev_maps.to(configs.device, non_blocking=True).float()
     return input_bev_maps
 
 
