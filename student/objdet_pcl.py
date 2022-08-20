@@ -11,6 +11,8 @@
 #
 
 # general package imports
+import zlib
+import open3d as o3d
 import cv2
 import numpy as np
 import torch
@@ -31,22 +33,56 @@ import misc.objdet_tools as tools
 
 
 # visualize lidar point-cloud
+
+
+def right_key(vis):
+    vis.destroy_window()
+    
+not_first_frame = False  
+window_created = False
+vis = None
 def show_pcl(pcl):
+    global not_first_frame, window_created, vis
 
     ####### ID_S1_EX2 START #######     
     #######
     print("student task ID_S1_EX2")
 
+    
     # step 1 : initialize open3d with key callback and create window
+    if not window_created:
+        vis = o3d.visualization.VisualizerWithKeyCallback()
+        vis.create_window(width=1024, height=768)
+        vis.register_key_callback(262, right_key)
+        window_created = True
+        
     
     # step 2 : create instance of open3d point-cloud class
+    cloud = o3d.geometry.PointCloud()
+        
 
     # step 3 : set points in pcd instance by converting the point-cloud into 3d vectors (using open3d function Vector3dVector)
+    cloud.points = o3d.utility.Vector3dVector(pcl[:,:3])
+    
 
     # step 4 : for the first frame, add the pcd instance to visualization using add_geometry; for all other frames, use update_geometry instead
+    vis.add_geometry(cloud)
+    
+    if not_first_frame:
+        print("update")
+        vis.update_geometry(cloud)
+    
+    not_first_frame = True
+    
     
     # step 5 : visualize point cloud and keep window open until right-arrow is pressed (key-code 262)
-
+    #vis.run()
+    vis.poll_events()
+    vis.update_renderer()
+    vis.remove_geometry(cloud)
+    
+    
+    
     #######
     ####### ID_S1_EX2 END #######     
        
