@@ -66,5 +66,7 @@ In autonomous systems, it is certain that multiple sensors should be used to det
 #### 3. Which challenges will a sensor fusion system face in real-life scenarios? Did you see any of these challenges in the project?
 Extrinsics and intinsics calibraitons of sensor will highly effect the fusion results. Also finding a robust algorithm for all environments (i.e crowd places, different objects than labeled data etc.) will increase algorithm complexity.
 
+In this project, coordinate systems conversions was the most difficult part for me. After some wrong approaches, i succeed finding suitable way.
+
 #### 4. Can you think of ways to improve your tracking results in the future?
 Dataset images should be audited and corrupted or unsuitable datas should be removed from the dataset. Also with more evaluating methods, model accuracy should be incresed. Additionally, coordinate systems conversions should be fine tuned and position errors should be decreased. 
