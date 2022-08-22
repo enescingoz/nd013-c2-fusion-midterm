@@ -12,6 +12,15 @@ Range and intensity channels are extrected from lidar data, which is stored as r
 In second part of step-1, Open3D library used to display lidar point-clodu data in a 3d viewer.
 
 ![f5](./img/f5.PNG)
+![f1](./img/f1.PNG)
+![f2](./img/f2.PNG)
+![f3](./img/f3.PNG)
+![f4](./img/f4.PNG)
+![f6](./img/f6.PNG)
+![f7](./img/f7.PNG)
+![f8](./img/f8.PNG)
+![f9](./img/f9.PNG)
+![f10](./img/f10.PNG)
 
 
 ## STEP - 2 - Create Birds-Eye View from Lidar PCL
@@ -38,14 +47,24 @@ As the model input is a three-channel BEV map, the detected objects will be retu
 
 ## STEP - 4 - Performance Evaluation for Object Detection
 
+The goal of this task is to find pairings between ground-truth labels and detections, so that we can determine wether an object has been (a) missed (false negative), (b) successfully detected (true positive) or (c) has been falsely reported (false positive). Based on the labels within the Waymo Open Dataset, your task is to compute the geometrical overlap between the bounding boxes of labels and detected objects and determine the percentage of this overlap in relation to the area of the bounding boxes. A default method in the literature to arrive at this value is called intersection over union.
 
+Based on the pairings between ground-truth labels and detected objects, the goal of this task is to determine the number of false positives and false negatives for the current frame. After all frames have been processed, an overall performance measure will be computed based on the results produced in this task.
+
+After processing all the frames of a sequence, the performance of the object detection algorithm shall now be evaluated. To do so in a meaningful way, the two standard measures "precision" and "recall" will be used, which are based on the accumulated number of positives and negatives from all frames.
+
+![eval-1](./img/1.PNG)
+
+
+To make sure that the code produces plausible results, the flag configs_det.use_labels_as_objects set to True in a second run. The resulting performance measures for this setting should be the following:
+![eval-2](./img/2.PNG)
 
 
 #### 2. Do you see any benefits in camera-lidar fusion compared to lidar-only tracking (in theory and in your concrete results)? 
-
+In autonomous systems, it is certain that multiple sensors should be used to detect cars, cyclists, pedestrians robustly. Also it is certain that it will increase safety. With fusing sensor datas, it will mitigate sensor noises and detection errors. 
 
 #### 3. Which challenges will a sensor fusion system face in real-life scenarios? Did you see any of these challenges in the project?
-
+Extrinsics and intinsics calibraitons of sensor will highly effect the fusion results. Also finding a robust algorithm for all environments (i.e crowd places, different objects than labeled data etc.) will increase algorithm complexity.
 
 #### 4. Can you think of ways to improve your tracking results in the future?
-
+Dataset images should be audited and corrupted or unsuitable datas should be removed from the dataset. Also with more evaluating methods, model accuracy should be incresed. Additionally, coordinate systems conversions should be fine tuned and position errors should be decreased. 
