@@ -69,8 +69,11 @@ def load_configs_model(model_name='darknet', configs=None):
         configs.model_path = os.path.join(parent_path, "tools", "objdet_models", "resnet")
         configs.pretrained_path = os.path.join(configs.model_path, "pretrained", "fpn_resnet_18_epoch_300.pth")
         configs.pretrained_filename = os.path.join(configs.model_path, "pretrained", "fpn_resnet_18_epoch_300.pth")
+        configs.root_dir = '../'
+        configs.dataset_dir = os.path.join(configs.root_dir, 'dataset', 'kitti')
         configs.use_giou_loss = False
         configs.num_samples = None
+        configs.peak_thresh = 0.2
         configs.num_workers = 4
         configs.batch_size = 4
         configs.gpu_idx = 0
@@ -144,7 +147,8 @@ def load_configs(model_name='fpn_resnet', configs=None):
     # visualization parameters
     configs.output_width = 608 # width of result image (height may vary)
     configs.obj_colors = [[0, 255, 255], [0, 0, 255], [255, 0, 0]] # 'Pedestrian': 0, 'Car': 1, 'Cyclist': 2
-
+    
+    configs.min_iou = 0.5
     return configs
 
 
@@ -224,6 +228,7 @@ def detect_objects(input_bev_maps, model, configs):
             detections = detections.cpu().numpy().astype(np.float32)
             detections = post_processing(detections, configs)
 
+            detections = detections[0][1]
             #######
             ####### ID_S3_EX1-5 END #######     
 
@@ -240,20 +245,24 @@ def detect_objects(input_bev_maps, model, configs):
         
         ## step 2 : loop over all detections
         for detection in detections:
-            """
-            _id, _x, _y, _z, _h, _w, _l, yaw = detection
-        
-            ## step 3 : perform the conversion using the limits for x, y and z set in the configs structure
-            x = _y / configs.bev_height * (configs.lim_x[1] - configs.lim_x[0])
-            y = (_x / configs.bev_width * (configs.lim_y[1] - configs.lim_y[0]) - (configs.lim_y[1] - configs.lim_y[0]) / 2.0)
-            z = _z / (configs.lim_z[1] - configs.lim_z[0]) + configs.lim_z[0]
-            h = _h / configs.bev_height * (configs.lim_x[1] - configs.lim_x[0])
-            w = _w / configs.bev_width * (configs.lim_y[1] - configs.lim_y[0])
-            l = _l / configs.bev_height * (configs.lim_x[1] - configs.lim_x[0])
-            """
-            
-            ## step 4 : append the current object to the 'objects' array
-            objects.append(detection)
+            print(detection)
+            try:
+                _id, _x, _y, _z, _h, _w, _l, _yaw = detection
+
+                ## step 3 : perform the conversion using the limits for x, y and z set in the configs structure
+                x = _y / configs.bev_height * (configs.lim_x[1] - configs.lim_x[0])
+                y = (_x / configs.bev_width * (configs.lim_y[1] - configs.lim_y[0]) - (configs.lim_y[1] - configs.lim_y[0]) / 2.0)
+                z = _z / (configs.lim_z[1] - configs.lim_z[0]) + configs.lim_z[0]
+                h = _h / configs.bev_height * (configs.lim_x[1] - configs.lim_x[0])
+                w = _w / configs.bev_width * (configs.lim_y[1] - configs.lim_y[0])
+                l = _l / configs.bev_height * (configs.lim_x[1] - configs.lim_x[0])
+                yaw = _yaw
+
+
+                ## step 4 : append the current object to the 'objects' array
+                objects.append([1, x, y, z, h, w, l, yaw])
+            except:
+                pass
         
     #######
     ####### ID_S3_EX2 END #######   

@@ -60,9 +60,10 @@ show_only_frames = [50, 51]
 
 ## Prepare Waymo Open Dataset file for loading
 data_fullpath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'dataset', data_filename) # adjustable path in case this script is called from another working directory
-model = "fpn_resnet"
+model = "darknet"
 sequence = "1"
-results_fullpath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'results/' + model + '/results_sequence_' + sequence + '_' + model)
+#results_fullpath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'results/' + model + '/results_sequence_' + sequence + '_' + model)
+results_fullpath = "/home/workspace/results/fpn_resnet/results_sequence_" + sequence + "_resnet"
 datafile = WaymoDataFileReader(data_fullpath)
 datafile_iter = iter(datafile)  # initialize dataset iterator
 
@@ -278,7 +279,7 @@ while True:
 
 ## Evaluate object detection performance
 if 'show_detection_performance' in exec_list:
-    eval.compute_performance_stats(det_performance_all, configs_det)
+    eval.compute_performance_stats(det_performance_all)
 
 ## Plot RMSE for all tracks
 if 'show_tracks' in exec_list:
